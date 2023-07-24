@@ -1,12 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import WelcomePage from './components/WelcomePage';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="App">
-  <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<WelcomePage />} />
+          {/* Add more routes here */}
+        </Routes>
+      </Router>
     </div>
   );
 }
