@@ -1,11 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const UserContext = React.createContext();
 
 function UserProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // Retrieve the user data from localStorage on initial render
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Save the user data in localStorage whenever it changes
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user]);
 
   const getCurrentUser = useCallback(async () => {
     try {
@@ -35,9 +44,8 @@ function UserProvider({ children }) {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setUser(data);
-        navigate('/homepage');
+        navigate('/home');
         return true;
       } else {
         const errorData = await response.json();
@@ -51,7 +59,7 @@ function UserProvider({ children }) {
   const logout = async () => {
     try {
       await fetch('/logout', {
-        method: 'POST',
+        method: 'DELETE', // Change the method to DELETE
       });
       setUser(null);
       navigate('/');
